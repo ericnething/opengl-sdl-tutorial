@@ -13,10 +13,14 @@
 
 ----------------------------------------------------------------------
 
+Encapsulate the necessary data for loading the shaders into a program.
+
 > data ShaderInfo = ShaderInfo GL.ShaderType FilePath
 >                 deriving ( Eq, Ord, Show )
 
 ----------------------------------------------------------------------
+
+Create a new program with the specified shaders.
 
 > loadShaders :: [ShaderInfo] -> IO GL.Program
 > loadShaders info = do
@@ -36,6 +40,8 @@ Link and check the program
 >   return program
 
 ----------------------------------------------------------------------
+
+Link the program and check for errors.
 
 > linkAndCheck :: GL.Program -> IO ()
 > linkAndCheck program = do
@@ -60,6 +66,8 @@ Validate the program
 >     exitFailure
 
 ----------------------------------------------------------------------
+
+Process the shaders and attach them to the program.
 
 > loadCompileAttach :: GL.Program -> [ShaderInfo] -> IO ()
 > loadCompileAttach _ [] = return ()

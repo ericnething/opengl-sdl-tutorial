@@ -1,35 +1,72 @@
 The StandAloneDeriving compiler directive is necessary to create
-an orphan instance of Ordfor SDL.Keysym
+an orphan instance of Ord for SDL.Keysym
 
 > {-# LANGUAGE StandaloneDeriving #-}
 > {-# LANGUAGE OverloadedStrings #-}
-> 
+
 > module Main
 >   ( main
 >   ) where
 
+We want to hide `null` and `filter` from the Prelude since we are using
+similarly named functions from Data.Set
+
 > import Prelude hiding (null, filter)
+
+Control.Monad
+
 > import qualified Control.Monad as M
+
+We want to store the keyboard input in a Set for easy processing
+
 > import Data.Set (Set, empty, insert, delete, null, filter)
+
+For pedagogical purposes, import SDL as SDL. We need to explicitly
+import the SDL Keyboard module because it is not included by default.
+
 > import qualified Graphics.UI.SDL as SDL
 > import qualified Graphics.UI.SDL.Keyboard as SDLK
+
+For pedagogical purposes, import OpenGL as GL and import the assignment
+combinator ($=) unqualified.
+
 > import qualified Graphics.Rendering.OpenGL as GL
 > import           Graphics.Rendering.OpenGL (($=))
 
 > import qualified Data.ByteString as BS
+
+Use the System module for error checking and cleanup
+
 > import System.Exit (exitFailure)
 > import System.IO
 
-> import Foreign.Ptr -- for: Ptr, nullPtr, plusPtr
-> import Foreign.Storable -- for: sizeOf
-> import Foreign.Marshal.Array -- for: withArray
+Since we are interfacing with a C library, we must use some utilities
+from the Foreign module.
+
+> import Foreign.Ptr           (Ptr, nullPtr, plusPtr)
+> import Foreign.Storable      (sizeOf)
+> import Foreign.Marshal.Array (withArray)
+
+Our custom utility for loading shaders.
 
 > import Shaders
 
+We must make SDL.Keysym an instance of Ord to use it in a Set.
+
+> deriving instance Ord SDL.Keysym
+
 ----------------------------------------------------------------------
+
+Set some constants for use later.
 
 > winWidth = 640
 > winHeight = 480
+
+We need this utility function to convert an Integral value into a Ptr
+for use in function calls that expect a Ptr buffer offset.
+
+> bufferOffset :: Integral a => a -> Ptr a
+> bufferOffset = plusPtr nullPtr . fromIntegral
 
 ----------------------------------------------------------------------
 
@@ -38,7 +75,7 @@ an orphan instance of Ordfor SDL.Keysym
 
 Set constants for use in window creation
 
->   let title     = "Eric's SDL and OpenGL Tutorial"
+>   let title     = "SDL and OpenGL Tutorial"
 >       position  = SDL.Position 0 0
 >       size      = SDL.Size winWidth winHeight
 >       win_flags = [SDL.WindowOpengl]
@@ -81,10 +118,17 @@ Set OpenGL context attributes
 
 > initGL :: IO ()
 > initGL = do
->   
->       -- for convenience
+
+Just for convenience, let's define a shorthand for setting attributes.
+
 >   let setAttr = SDL.glSetAttribute
->       -- convert the Profile value to a CInt
+
+Unfortunately, the current implementation of glSetAttribute expects a
+CInt as the second argument, but the Profile constants must be retrieved
+by a call to sdlGLAttributeToC. I'd like to find a more elegant way to
+solve this issue, but this is a quick solution that works for now in my
+fork of the high-level SDL 2.x bindings.
+
 >       profileVersion = SDL.sdlGLAttributeToC SDL.GLContextProfileCore
 
 OpenGL profile and version
@@ -100,11 +144,13 @@ Enable double buffering with a 24 bit Z buffer
 
 ----------------------------------------------------------------------
 
-Create a Descriptor to contain the information about the VAO
+Encapsulate the VAO data inside of a Descriptor.
 
 > data Descriptor = Descriptor GL.VertexArrayObject GL.ArrayIndex GL.NumArrayIndices
 
 ----------------------------------------------------------------------
+
+Initialize all of the resources.
 
 > initResources :: IO Descriptor
 > initResources = do
@@ -167,8 +213,7 @@ Set this vertex attribute array as the active one
 > 
 >   return $ Descriptor triangle 0 (fromIntegral numVertices)
 
-> bufferOffset :: Integral a => a -> Ptr a
-> bufferOffset = plusPtr nullPtr . fromIntegral
+----------------------------------------------------------------------
 
 > draw :: SDL.Window -> Descriptor -> IO ()
 > draw win (Descriptor triangle firstIndex numVertices) = do
@@ -198,6 +243,8 @@ Disable vertex array
 
 ----------------------------------------------------------------------
 
+Here we define the vertices of the object we want to draw on screen.
+
 > vertices :: [GL.Vertex2 GL.GLfloat]
 > vertices = [ GL.Vertex2 (-0.7)   0.4
 >            , GL.Vertex2   0.1    0.9
@@ -211,7 +258,7 @@ Disable vertex array
 >   GL.clearColor $= GL.Color4 1.0 1.0 1.0 1.0
 >   GL.clear [GL.ColorBuffer]
 
-Primary rendering action
+The main loop of our program
 
 > mainLoop screen keysDown descriptor = do 
 
@@ -219,7 +266,7 @@ Capture any new events
 
 >   keysDown' <- parseEvents keysDown
 
-Render the context
+Render the current frame
 
 >   draw screen descriptor
 
@@ -235,7 +282,7 @@ Quit if Escape is pressed, otherwise continue
 ----------------------------------------------------------------------
     
 Use pollEvent to return the topmost event from the queue. If there are
-no events in the queue, pollEvenet will return Nothing.
+no events in the queue, pollEvent will return Nothing.
 
 > parseEvents :: Set SDL.Keysym -> IO (Set SDL.Keysym)
 > parseEvents keysDown = do
@@ -271,7 +318,3 @@ Otherwise, continue
 > 
 > keyDown :: SDL.Scancode -> Set SDL.Keysym -> Bool
 > keyDown k = not . null . filter ((== k) . SDL.keyScancode)
-
-We must make SDL.Keysym an instance of Ord to use it in a Set
-
-> deriving instance Ord SDL.Keysym
