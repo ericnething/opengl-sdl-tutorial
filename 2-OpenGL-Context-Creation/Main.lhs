@@ -26,11 +26,9 @@ import the SDL Keyboard module because it is not included by default.
 > import qualified Graphics.UI.SDL as SDL
 > import qualified Graphics.UI.SDL.Keyboard as SDLK
 
-For pedagogical purposes, import OpenGL as GL and import the assignment
-combinator ($=) unqualified.
+For pedagogical purposes, import OpenGL as GL.
 
 > import qualified Graphics.Rendering.OpenGL as GL
-> import           Graphics.Rendering.OpenGL (($=))
 
 We must make SDL.Keysym an instance of Ord to use it in a Set.
 
