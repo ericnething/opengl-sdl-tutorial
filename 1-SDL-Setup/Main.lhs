@@ -54,6 +54,8 @@ Destroy the window
 
 >   SDL.destroyWindow window
 
+----------------------------------------------------------------------
+
 > mainLoop window keysDown = do
 
 Capture any new events
@@ -64,6 +66,13 @@ Quit if Escape is pressed or the user X's out the window.
 
 >   M.unless (keyDown SDL.Escape keysDown') $ do
 >     mainLoop window keysDown'
+
+----------------------------------------------------------------------
+
+This is a convenience function for checking whether a key exists in the Set.
+
+> keyDown :: SDL.Scancode -> Set SDL.Keysym -> Bool
+> keyDown k = not . null . filter ((== k) . SDL.keyScancode)
 
 ----------------------------------------------------------------------
 
@@ -101,6 +110,3 @@ Add Escape to the set on a Quit event to quit the game
 Otherwise, continue
 
 >         _ -> parseEvents keysDown
-> 
-> keyDown :: SDL.Scancode -> Set SDL.Keysym -> Bool
-> keyDown k = not . null . filter ((== k) . SDL.keyScancode)
