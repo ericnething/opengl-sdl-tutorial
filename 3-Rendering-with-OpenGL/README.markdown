@@ -124,9 +124,9 @@ First we must create an array of vertices. Our goal will be to form a triangle. 
 
 ```haskell
 vertices :: [GL.Vertex2 GL.GLfloat]
-vertices = [ GL.Vertex2   0.0   0.5   -- vertex 1
-           , GL.Vertex2   0.5 (-0.5)  -- vertex 2
-           , GL.Vertex2 (-0.5) -0.5 ] -- vertex 3
+vertices = [ GL.Vertex2   0.0    0.5    -- vertex 1
+           , GL.Vertex2   0.5  (-0.5)   -- vertex 2
+           , GL.Vertex2 (-0.5) (-0.5) ] -- vertex 3
 ```
 
 Then generate a new buffer. This is quite different from the C API where you would make a call to `glGenBuffers` with an argument of "1" to return one buffer. Instead, the Haskell bindings use genObjectName (for one) and genObjectNames (for more than one).

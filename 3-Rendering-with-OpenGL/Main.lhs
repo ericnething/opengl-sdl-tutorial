@@ -33,6 +33,8 @@ combinator ($=) unqualified.
 > import qualified Graphics.Rendering.OpenGL as GL
 > import           Graphics.Rendering.OpenGL (($=))
 
+To load the shader source files, we need the ByteString module.
+
 > import qualified Data.ByteString as BS
 
 Use the System module for error checking and cleanup
@@ -235,7 +237,7 @@ Set up the viewport
 
 Draw to the buffer
 
->   GL.drawArrays GL.TriangleStrip firstIndex numVertices
+>   GL.drawArrays GL.Triangles firstIndex numVertices
 
 Disable vertex array
 
@@ -246,10 +248,9 @@ Disable vertex array
 Here we define the vertices of the object we want to draw on screen.
 
 > vertices :: [GL.Vertex2 GL.GLfloat]
-> vertices = [ GL.Vertex2 (-0.7)   0.4
->            , GL.Vertex2   0.1    0.9
->            , GL.Vertex2 (-0.3) (-0.4)
->            , GL.Vertex2   0.4  (-0.4) ]
+> vertices = [ GL.Vertex2   0.0    0.5
+>            , GL.Vertex2   0.5  (-0.5)
+>            , GL.Vertex2 (-0.5) (-0.5) ]
 
 ----------------------------------------------------------------------
 
