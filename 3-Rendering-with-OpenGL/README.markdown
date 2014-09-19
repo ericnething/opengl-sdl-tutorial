@@ -46,6 +46,7 @@ statusOK <- GL.get (GL.compileStatus shader)
 Next, we can create a program to hold all of our shaders.
 
 To combine several shaders into a program:
+
 1. Create a program object
 2. Attach the compiled shaders
 3. Map the fragment shader outputs to buffers in GPU memory
@@ -89,6 +90,7 @@ Getting Data Into Our Shaders
 Our shaders are programs that accept data as input, but how do we pass the data into them?
 
 To link vertex data with shader attributes:
+
 1. Obtain a reference to the desired attribute in the shader
 2. Specify how the data is retrieved from the vertex attribute array
 3. Enable the vertex attribute array
@@ -167,6 +169,7 @@ Vertex Array Object (VAO)
 A VAO stores references to VBOs and the links between shader inputs and attribute data that is created using `vertexAttribPointer`.
 
 To use a VAO:
+
 1. Create a buffer object
 2. Set it as the active VAO
 

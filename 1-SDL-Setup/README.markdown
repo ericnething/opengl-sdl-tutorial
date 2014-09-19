@@ -46,7 +46,7 @@ Finally, destroy the window when the main program finishes.
 SDL.destroyWindow window
 ```
 
-There is a lot of error-checking and other initialization that it taken care of by the Haskell bindings to SDL 2 that you don't need to worry about. All you need are these three lines in your main do-block.
+There is a lot of error-checking and other initialization that is taken care of by the Haskell bindings to SDL 2 that you don't need to worry about. All you need are these three lines in your main do-block.
 
 Capturing Input
 ---------------
