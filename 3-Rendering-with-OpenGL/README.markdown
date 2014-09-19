@@ -9,6 +9,7 @@ Shaders
 Shaders are programs that run on the GPU. There are several different types of shaders, but for now we will focus on the most basic ones: vertex shaders and fragment shaders.
 
 To build a shader:
+
 1. Create a shader object
 2. Load the GLSL source file into the shader object
 3. Compile the shader
