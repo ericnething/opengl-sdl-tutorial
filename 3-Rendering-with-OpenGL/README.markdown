@@ -16,9 +16,9 @@ To build a shader:
 2. Load the GLSL source file into the shader object
 3. Compile the shader
 
-Below is our vertex shader source. It begins with a declaration to specify the version of GLSL to use (which is the same as the version of OpenGL since 3.3). Then the inputs are specified using the `in` keyword, followed by outputs declared with the `out` keyword (we have no outputs in out vertex shader at the moment). Then, like in C, we have a `main` function where the executable statements are located.
+Below is our vertex shader source `triangle.vertex`. It begins with a declaration to specify the version of GLSL to use (which is the same as the version of OpenGL since 3.3). Then the inputs are specified using the `in` keyword, followed by outputs declared with the `out` keyword (we have no outputs in our vertex shader at the moment). Then, like in C, we have a `main` function where the executable statements are located.
 
-`gl_Position` specifies the positional information to pass on to the next stage of the pipeline. In this case we are passing a 4-dimensional vector `vec4` with the third value set to 0 and the fourth value set to 1. OpenGL uses a homogeneous coordinate system (x, y, z, w) to simplify calculations. The fourth value (w) must be set to 1 for gl_Position. This doesn't make any difference to us, however, since we only use up to 3 dimensions when specifying position.
+`gl_Position` specifies the positional information to pass on to the next stage of the pipeline. In this case we are passing a 4-dimensional vector `vec4` with the third value set to `0` and the fourth value set to `1`. OpenGL uses a homogeneous coordinate system *(x, y, z, w)* to simplify calculations. The fourth value *(w)* must be set to `1` for `gl_Position`. This doesn't make any difference to us, however, since we only specify positions in 3-dimensional space.
 
 ```glsl
 # version 410
@@ -71,7 +71,7 @@ To combine several shaders into a program:
 4. Link and check the program
 5. Set the program as the active program to use it
 
-Below is the source for our fragment shader. As before, we start with a version declaration, followed by the inputs and outputs. We can use whatever name we want for the output here, but let's use `fColor` -- for *fragment color*. This is an RGBA value, so our triangle will be colored blue.
+Below is the source for our fragment shader `triangle.fragment`. As before, we start with a version declaration, followed by the inputs and outputs. We can use whatever name we want for the output here, but let's use `fColor` -- for *fragment color*. This is an RGBA value, so our triangle will be colored blue.
 
 ```glsl
 # version 410
@@ -114,6 +114,8 @@ Then set this program as the active program so we can use it. In the C API, this
 ```haskell
 GL.currentProgram $= Just program
 ```
+
+Because the process of building shaders is so common, I have included a generalized version of this process in the Shaders module in the source for this tutorial.
 
 Getting Data Into Our Shaders
 -----------------------------
