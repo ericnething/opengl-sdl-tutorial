@@ -1,7 +1,9 @@
 Part 3: Rendering with OpenGL
 =============================
 
-Let's begin with a description of the modern shader pipeline. Previously, OpenGL used a fixed-function pipeline that was easy for beginners, but limited in usefulness. The modern shader pipeline is very powerful, but has a steep learning curve for beginners. It's best to start with a high-level overview of the pipeline, but before we get to that, what *is* a shader?
+Let's begin with a description of the modern shader pipeline. Previously, OpenGL used a fixed-function pipeline that was easy for beginners, but limited in usefulness. The modern shader pipeline is very powerful, but requires you to set up your own plumbing. It's best to start with [a high-level overview of the pipeline](https://www.opengl.org/wiki/Rendering_Pipeline_Overview).
+
+All you need to get started is a vertex shader and a fragment shader, both written in a C-like language called [GLSL](https://www.opengl.org/wiki/GLSL). The data also flows in that order, from vertex shader to fragment shader. But what *is* a shader?
 
 Shaders
 -------
@@ -14,7 +16,22 @@ To build a shader:
 2. Load the GLSL source file into the shader object
 3. Compile the shader
 
-First, let's build a vertex shader. We create a shader object using `createShader`, passing in the type of shader we want.
+Below is our vertex shader source. It begins with a declaration to specify the version of GLSL to use (which is the same as the version of OpenGL since 3.3). Then the inputs are specified using the `in` keyword, followed by outputs declared with the `out` keyword (we have no outputs in out vertex shader at the moment). Then, like in C, we have a `main` function where the executable statements are located.
+
+`gl_Position` specifies the positional information to pass on to the next stage of the pipeline. In this case we are passing a 4-dimensional vector `vec4` with the third value set to 0 and the fourth value set to 1. OpenGL uses a homogeneous coordinate system (x, y, z, w) to simplify calculations. The fourth value (w) must be set to 1 for gl_Position. This doesn't make any difference to us, however, since we only use up to 3 dimensions when specifying position.
+
+```glsl
+# version 410
+
+in vec2 position;
+
+void main()
+{
+        gl_Position = vec4( position, 0, 1 );
+}
+```
+
+Now let's build a vertex shader. We create a shader object using `createShader`, passing in the type of shader we want.
 
 ```haskell
 shader <- GL.createShader GL.VertexShader
@@ -53,6 +70,19 @@ To combine several shaders into a program:
 3. Map the fragment shader outputs to buffers in GPU memory
 4. Link and check the program
 5. Set the program as the active program to use it
+
+Below is the source for our fragment shader. As before, we start with a version declaration, followed by the inputs and outputs. We can use whatever name we want for the output here, but let's use `fColor` -- for *fragment color*. This is an RGBA value, so our triangle will be colored blue.
+
+```glsl
+# version 410
+
+out vec4 fColor;
+
+void main()
+{
+        fColor = vec4( 0, 0, 1, 1 );
+}
+```
 
 To create the program object, use `createProgram`.
 
